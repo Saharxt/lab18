@@ -8,9 +8,10 @@
 using namespace std;
 
 struct student{
-
-    //[Missing Code 1] Define struct student with four members (name ,id , gender, gpa);
-    
+    string name;
+    int id;
+    char gender;
+    float gpa;
 };
 
 struct course{
@@ -35,17 +36,19 @@ student text2student(string text){
     
     //[Missing Code 2] Fill in the blank with the correct code.;
     s.name = name;
-    s.id = _____________;
-    s.gender = _____________;
-    s.gpa = _____________;
+    s.id = stoi(id);
+    s.gender = gen[0];
+    s.gpa = stof(gpa);
     
-    _____________;
+    return s;
 }
 
 
-student * findstudent(vector<student> allstudents,int key){ //[Missing Code 4] There is something wrong in this line.
+student * findstudent(vector<student> &allstudents,int key){ //[Missing Code 4] There is something wrong in this line.
 	for(unsigned int i = 0; i < allstudents.size(); i++){
-		if(allstudents[i].id  == key) return &allstudents[i];
+		if(allstudents[i].id  == key) {
+			return &allstudents[i]; //address
+		}
 	}
 	return 0;
 }
@@ -84,7 +87,7 @@ int main(){
 	
 	string textline;
 	
-	while(getline(student_file,textline)){
+	while(getline(student_file,textline)){  //คือดึงข้อมูลออกมา แล้วดันข้อมูลเข้าไปใน allstudent
         student s =  text2student(textline); 
 		allstudents.push_back(s); 		
 	}
@@ -93,18 +96,19 @@ int main(){
 	while(getline(course_file,textline)){
 		if(state == 1){
 			course c;
-			int loc = textline.find_first_of('(');
+			int loc = textline.find_first_of( '(' );
 			c.name = textline.substr(0,loc-1);
 			c.id = atof(textline.substr(loc+1,5).c_str());
 			getline(course_file,textline);
 			allcourses.push_back(c);
 			state = 2;			
+			
 		}else if(state == 2){
 			if(textline == "> Students"){
 				state = 3;
 			}else{
 			
-			    //[Missing Code 3] Append (push_back) textline to lecture_list[] of the recently added course in allcourses[];
+			    allcourses[ allcourses.size()-1 ].lecture_list.push_back(textline);
 			    
 			}			
 		}else{
@@ -112,7 +116,7 @@ int main(){
 				state = 1;
 			}else{
 				student *p = findstudent(allstudents,atof(textline.c_str()));
-				
+				allcourses[allcourses.size()-1].student_list.push_back(p);
 				//[Missing Code 5] Append (push_back) p to student_list of the recently added course in allcourses[];
 				
 			}
